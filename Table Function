@@ -1,0 +1,19 @@
+//This user-defined SQL function will return a table
+IF OBJECT_ID (N'Sales.ufn_SalesByStore', N'IF') IS NOT NULL --OBJECT_ID is used to check for that object, the N'IF' piece at the end specifies the object type  
+    DROP FUNCTION Sales.ufn_SalesByStore;  --This will only run if conditions are met, i.e. if the table object exists
+GO  
+//Just like the Scalar function, we use CREATE FUNCTION and define the name and any arguments
+CREATE FUNCTION Sales.ufn_SalesByStore (@storeid int)  
+RETURNS TABLE  --Here we're telling it that it'll return a table instead of a scalar SQL-type value
+AS  
+RETURN   
+(  
+    //Here's the table that is returned by the function
+    SELECT P.ProductID, P.Name, SUM(SD.LineTotal) AS 'Total'  
+    FROM Production.Product AS P   
+    JOIN Sales.SalesOrderDetail AS SD ON SD.ProductID = P.ProductID  
+    JOIN Sales.SalesOrderHeader AS SH ON SH.SalesOrderID = SD.SalesOrderID  
+    JOIN Sales.Customer AS C ON SH.CustomerID = C.CustomerID  
+    WHERE C.StoreID = @storeid  
+    GROUP BY P.ProductID, P.Name  
+);  
