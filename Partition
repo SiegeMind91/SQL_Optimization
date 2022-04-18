@@ -1,0 +1,24 @@
+//Partition Example
+//Partitions allow us to section off groups of the data, based on a given parameter
+
+//For example, let's suppose we had a table of sales agents and we wanted to see their rank of 
+//	Total sales for a given timeframe:
+
+SELECT *,
+   RANK() OVER(PARTITION BY Sales.Agent ORDER BY Sales.TotalRevenue DESC)
+FROM (
+	SELECT Transactions.Agent, Transactions.Revenue
+        FROM BaseTransactionsTable 
+     ) Sales
+
+
+//We could also try to get the average time a truck driver spends on the road per day, per month
+//	(Assuming that the table is set up by day)
+
+SELECT Driver, TimeDriving,
+   AVG(LogTable.TimeDriving) OVER(PARTITION BY LogTable.Driver, LogTable.Month) as AverageDriveTime
+FROM LogTable
+
+
+//You can basically think of it like a pivot table for SQL
+//It's immensely useful, and will save you time in the long run
