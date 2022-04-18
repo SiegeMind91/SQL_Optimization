@@ -1,0 +1,18 @@
+//This query helps us bulk load data from a CSV
+
+CREATE TABLE #tempTable1
+(
+    ID INT,
+    CD VARCHAR(50), 
+    ESD DATETIME,
+    EED DATETIME, 
+    MiscDate DATETIME, 
+    SQ SMALLINT
+)
+
+BULK INSERT #tempTable1
+FROM 'C:\Dir\Folder\BestFile.csv'
+WITH
+(
+    FIELDTERMINATOR = ','           -- add this for comma separated files 
+);
