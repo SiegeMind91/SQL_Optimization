@@ -1,0 +1,43 @@
+//Stored Procedures are a huge boon for other programming languages because it 
+// allows us to call and execute a query without possibly exposing our database structure 
+
+//They also allow us the ability to take a piece of code that will be reused over and over
+// and (as the name suggests) store it in a way that lets anyone with access execute it. 
+// Thus saving the time of rewriting this query in several places 
+
+//Simple Template:
+CREATE PROCEDURE GetActiveMembers
+AS
+  SELECT * 
+  FROM Members
+  WHERE Members.Status = "Active"
+GO;
+
+//Then if we wanted to call that procedure (using SQL)
+EXEC GetActiveMembers;
+
+//We can also add parameters 
+//This is especially handy when it's to be used when calling the functions from Web APIs or desktop applications
+CREATE PROCEDURE GetMembers_InGivenCity @City nvarchar(30), @State nvarchar(20)
+AS
+  SELECT * 
+  FROM Members 
+  WHERE Members.City = @City
+    AND Members.State = @State
+    AND Members.Status = "Active"
+GO;
+
+//Here are some helpful tips for optimization
+// + Make sure to add SET NOCOUNT ON as the first statement of your procedure. This will keep it from returning the row count as the first argument 
+// + Don't use "sp_" in your naming convention. Microsoft has built in functions that you may overwrite or confuse with your own. 
+// + Don't write "SELECT Count(*) FROM Table" if you want the record count. "SELECT Count(PrimaryKeyColumn) FROM Table will be faster. 
+// + Avoid dynamic queries or cursors for looping as this can slow down performance
+// + Try to use table joins over the subqueries in the where conditions
+// + Use Schema name with an object name for clarity
+// + Avoid using the NOT LIKE operator, as it can slow processing down
+// + Try to prioritize table variables over temp tables and keep minimal use of temp tables
+// + Use table variables to do further processing, it disconnects the primary table reference
+// + Create indexes 
+// + Use sp_executesql isntead of EXECUTE. It gives more security in that it doesn't let just anything be called, allows parameterization,
+//    is strongly typed, and doesn't have to utilize some of the extra steps in creating an execution plan and caching. 
+// + Instead of keeping large Stored Procedures, try to break them into smaller sub-processes
