@@ -1,0 +1,40 @@
+//SQL Server offers us the ability to return the queried information as a JSON output
+//To do this, we use the "FOR JSON PATH" clause
+
+//Example:
+SELECT TOP 3 ST.OrderID AS 'Order.Number',  
+        ST.OrderDate AS 'Order.Date',  
+        OD.UnitPrice AS 'Product.Price',  
+        OD.OrderQty AS 'Product.Quantity'  
+FROM Sales.SalesTransactions ST  
+   INNER JOIN Sales.OrderDetail OD ON ST.OrderID = OD.OrderID  
+FOR JSON PATH   
+
+//Results:
+[{
+	"Order": {
+		"Number": "ST15684",
+		"Date": "2011-05-31"
+	},
+	"Product": {
+		"Price": 3514.1240,
+		"Quantity": 3
+	}
+}, {
+	"Order": {
+		"Number": "ST15725",
+    "Date": "2011-07-15"
+	},
+	"Product": {
+		"Price": 2024.9940,
+		"Quantity": 1
+	}, {
+	"Order": {
+		"Number": "ST15860",
+    "Date": "2011-08-01"
+	},
+	"Product": {
+		"Price": 4895.4540,
+		"Quantity": 4
+	}
+}]
