@@ -1,0 +1,39 @@
+//This is a quick guide to Joins - One of the most basic SQL keywords, but also one of the most powerful
+
+//Left Join (Also called Left Outer Join)
+//This type of join returns the table on the "Left" side of the join, and any matching records from the "Right" side
+SELECT *
+FROM TableA
+  LEFT JOIN TableB ON TableA.Key = TableB.Key
+  
+//Inner Join
+//This type of join returns only matching records from both tables
+SELECT *
+FROM TableA
+  INNER JOIN TableB ON TableA.Key = TableB.Key
+  
+//Right Join (Also called Right Outer Join)
+//This type of join returns the table on the "Right" side of the join, and any matching records from the "Left" side
+SELECT *
+FROM TableA
+  RIGHT JOIN TableB ON TableA.Key = TableB.Key
+  
+//Full Join (Also called Full Outer Join)
+//This type of join returns all rows from both tables, regardless of match
+SELECT * 
+FROM TableA
+  FULL OUTER JOIN TableB ON TableA.Key = TableB.Key
+  
+//With the Right, Left, and Full Outer Joins we can also add a WHERE clause that changes the behavior slightly
+//We can add a WHERE clause for NULL records to give us only the records that don't have a match
+//Left Join Example:
+SELECT *
+FROM TableA
+  LEFT JOIN TableB ON TableA.Key = TableB.Key
+WHERE TableB.Key = NULL
+
+//Full Outer Join Example:
+SELECT * 
+FROM TableA
+  FULL OUTER JOIN TableB ON TableA.Key = TableB.Key
+WHERE TableA.Key = NULL AND TableB.Key = NULL
