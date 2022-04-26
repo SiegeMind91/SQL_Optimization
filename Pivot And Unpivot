@@ -1,0 +1,41 @@
+//Pivot is a powerful tool when you need to change the view of your table, taking row values and making them columns
+
+//Let's say that you want to see how many times an employee appears in a given data set, and that you wanted to have a single row for each employee 
+//The below creates a table with appearances ranked by AppearanceDate in separate columns, but it's a little confusing
+SELECT EmployeeID, 
+  MAX(FirstAppearance) as FirstAppearance, 
+  MAX(SecondAppearance) as SecondAppearance, 
+  MAX(ThirdAppearance) as ThirdAppearance, 
+  MAX(FourthAppearance) as FourthAppearance, 
+  MAX(FifthAppearance) as FifthAppearance
+FROM (
+    SELECT EmployeeID, CASE WHEN Appearance = 1 THEN AppearanceDate END as FirstAppearance,
+                        CASE WHEN Appearance = 2 THEN AppearanceDate END as SecondAppearance,
+                        CASE WHEN Appearance = 3 THEN AppearanceDate END as ThirdAppearance,
+                        CASE WHEN Appearance = 4 THEN AppearanceDate END as FourthAppearance,
+                        CASE WHEN Appearance = 5 THEN AppearanceDate END as FifthAppearance
+    FROM (
+        SELECT *, Rank() OVER(PARTITION BY EmployeeID ORDER BY AppearanceDate asc) as Appearance
+        FROM Employees
+         )   
+     )
+GROUP BY EmployeeID
+
+
+//We can do the same thing with PIVOT, and as you can see it's much cleaner and more readable
+SELECT *
+FROM (
+    SELECT *, Rank() OVER(Partition by EmployeeID ORDER BY AppearanceDate asc) as Appearance
+    FROM Employees
+     ) Appearances  
+PIVOT(Max(AppearanceDate) FOR Appearance IN (1,2,3,4,5)) as p
+
+
+//We can also reverse the process using UNPIVOT 
+//For example, say we had a table organized by VendorID and Employee, but we wanted to see the total Orders per Employee, per Vendor
+SELECT VendorID, Employee, Orders  
+FROM   
+   (SELECT VendorID, Emp1, Emp2, Emp3, Emp4, Emp5  
+      FROM pvt) p  
+UNPIVOT (Orders FOR Employee IN (Emp1, Emp2, Emp3, Emp4, Emp5)  
+) AS unpvt; 
