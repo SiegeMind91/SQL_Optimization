@@ -1,0 +1,78 @@
+//In SQL Server, Triggers are special stored procedures that happen in response to database object, database, and server events. 
+
+//There are 3 Types of Triggers:
+//  + Data Manipulation Language (DML) triggers are invoked in response to INSERT, UPDATE, and DELETE events
+//  + Data Definition Language (DDL) triggers are caused by CREATE, ALTER, and DROP statements
+//  + Logon triggers occur in response to LOGON events
+
+//DML Example
+//This query inserts rows into another table for each record Inserted, Updated or Deleted from the table we're pointing the trigger at
+//It could be useful for log tables or any other tracking type table
+CREATE TRIGGER someSchema.TriggerName ON someSchema.someTable
+AFTER INSERT, UPDATE, DELETE //I've added all 3 here, but you can use only 1 or 2 if it fits your needs
+AS 
+BEGIN
+SET NOCOUNT ON;
+INSERT INTO
+  someOtherSchema.someOtherTable
+    ( 
+      someID,
+      someName,
+      someBrand,
+      somePrice,
+      someQuantity,
+      someDate,
+      Operation
+    )
+SELECT 
+  someTable.someID,
+  someTable.someName,
+  someTable.someBrand,
+  someTable.somePrice,
+  someTable.someQuantity,
+  someTable.someDate,
+  'INS'
+FROM someTable as insertedRecords
+UNION ALL
+SELECT 
+  someTable.someID,
+  someTable.someName,
+  someTable.someBrand,
+  someTable.somePrice,
+  someTable.someQuantity,
+  someTable.someDate,
+  'DEL'
+FROM someTable as deletedRecords
+UNION ALL
+SELECT 
+  someTable.someID,
+  someTable.someName,
+  someTable.someBrand,
+  someTable.somePrice,
+  someTable.someQuantity,
+  someTable.someDate,
+  'UPD'
+FROM someTable as updatedRecords;
+
+//DDL Example
+//This example is triggered by database changes (Create/Alter/Drop_Index) and inserts 
+// a row into the log table, capturing the event and the user
+CREATE TRIGGER db_index_changes
+ON DATABASE
+FOR	
+    CREATE_INDEX,
+    ALTER_INDEX, 
+    DROP_INDEX
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO someLogTable (
+        someEventData,
+        someChangeId
+    )
+    VALUES (
+        EVENTDATA(),
+        USER
+    );
+END;
