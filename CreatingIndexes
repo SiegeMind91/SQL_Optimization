@@ -1,0 +1,47 @@
+//Indexes are an easy way to speed up our queries, we essentially create a map for our execution plan to use 
+//Creating them is actually quite simple and is recommended for large tables
+
+//Template:
+CREATE INDEX <index_name>
+ON <table_name> (<column_name1>, <column_name2>, etc.)
+
+//Simple Example - Single Column
+CREATE INDEX idx_LastName
+ON tblPersons (LastName)
+
+//More Complex Example - Composite Index (Multi-column index)
+CREATE INDEX idx_Names
+ON tblPersons (LastName, FirstName)
+
+//The benefit to multi-column indexes is that it can speed up your query time even more
+//However, it needs to be noted that if you use a multicolumn index you need to query using both columns in that index
+//  For example, if you tried to query for FirstName and only had the idx_names index, it wouldn't use it and 
+//  instead would query as if we didn't have any indexes. 
+//  It's like looking in a phone book for the first name when all records are sorted by Last Name, it doesn't make sense
+
+//You can also delete indexes on your tables by using the command below
+DROP INDEX tblPersons.idx_Names;
+
+//It is recommended that you refresh your indexes from time to time as they can become fragmented
+//In SQL Server, you can right-click on the index in your context manager and then click "Rebuild" or "Reorganize"
+//You can also choose a specific index, but here we're assuming you want to Rebuild/Reorganize ALL of them
+
+//Rebuild Syntax
+USE yourDatabase;
+GO
+ALTER INDEX ALL ON yourTable REBUILD;
+GO
+
+//Rebuild does what the name says, it completely Rebuilds your indexes and if it finds an issue or breaks in the middle of 
+//    the process, it must rollback and then start from scratch (which if you're offline can take a long time, in single-threaded mode!)
+
+//Reorganize Syntax
+USE yourDatabase;
+GO
+ALTER INDEX ALL ON yourTable REORGANIZE;
+
+//Reorganize doesn't create a new index, but instead moves along the memory and fixes physical ordering as it goes
+//This one is much more lightweight, faster, and doesn't need to rollback if it errors or breaks and can just start again from the top
+
+//There is no reason to do both, as they both do roughly the same thing. Just use one and be amazed at the speed savings!
+
