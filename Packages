@@ -1,0 +1,17 @@
+Packages are a helpful way to contain a process for getting specific data. 
+
+Straight from the Microsoft Documentation:
+"A package is an organized collection of connections, control flow elements, data flow elements, event handlers, 
+  variables, parameters, and configurations, that you assemble using either the graphical design tools that SQL 
+  Server Integration Services provides, or build programmatically."
+
+We can create them in SSIS (Sql Server Integration Services), a type of project inside Visual Studio. 
+
+Each package has a number of things that it may contain including;
+  + Tasks & Containers - This is your Control Flow
+    - These execute when the package runs and can be called repeatedly if necessary
+  + Data Sources and Destinations - This is your Data Flow
+    - These are the heart of your ETL, Extract from a Source, Transform the data, Load to the Destination
+    - Before you can add data to a package, it must have a data flow
+  + Connection Managers - This is where your connections are stored
+    - Each package usually has at least one to manage the properties of your package
