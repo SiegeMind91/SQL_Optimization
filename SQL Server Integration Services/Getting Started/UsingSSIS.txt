@@ -1,0 +1,14 @@
+Using SSIS 
+
+We can use SSMS to interact with and execute the SSIS packages. 
+In order to do so you'll need to open SSMS as an administrator and then connect to the server that holds the pacakges we want to interact with. 
+
+In order to design packages, we'll need to have SQL Server Data Tools (SSDT) installed. 
+Generally, you're going to use this as a component of Visual Studio. 
+During the VS installation, you'll be given the opportunity to select which workloads you're going to expect to use with VS. In this section, you'll 
+    want to choose 'Data storage and processing' to ensure SSDT is installed as well. 
+We're not done there though, we also need to make sure that the SSIS extension is added with the VS install. 
+    To do so, click the extensions drop down at the top of VS, then click Manage Extensions. 
+    Then go to the 'Online' option, and search for 'SQL Server Integration Services Projects' and download it. 
+
+One important thing to note is the package that will be executed by SQL Server, Package.dtsx.

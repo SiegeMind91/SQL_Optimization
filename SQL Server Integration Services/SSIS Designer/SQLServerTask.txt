@@ -1,0 +1,11 @@
+SQL Server Task 
+
+This task helps us to link to a SQL script somewhere on our local machine or connected network drives. 
+There are a couple of SQL statement options:
+    + Execute SQL Task 
+    + Execute T-SQL Task 
+These options are very similar but with some key differences:
+    + The T-SQL Task must use the T-SQL language and doesn't offer options for parameterized queries 
+    + The regular SQL Task is more generalized and will accept most SQL languages as well as parameters 
+
+ 

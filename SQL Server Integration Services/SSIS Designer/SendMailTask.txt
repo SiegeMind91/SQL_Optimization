@@ -1,0 +1,10 @@
+Send Mail Task 
+
+This task is pretty straightforward as well, it sends an email.
+You can configure it to contain exactly what you need:
+    + From/To/CC 
+    + Subject
+    + Message Source or Body of the email 
+
+We can also choose to send a different email based on the success/failure of the precendece (last task)
+

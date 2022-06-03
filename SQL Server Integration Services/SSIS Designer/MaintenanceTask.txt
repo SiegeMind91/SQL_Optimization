@@ -1,0 +1,7 @@
+Maintenance Task 
+
+The Maintenance Task can be used to perform many administrative functions including:
+    + Backing up and shrinking SQL Server Dbs
+    + Rebuilding and reorganizing indexes 
+    + Running SQL Server agent jobs 
+

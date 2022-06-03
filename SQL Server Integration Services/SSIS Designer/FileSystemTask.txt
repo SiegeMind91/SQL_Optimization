@@ -1,0 +1,21 @@
+File System Task
+
+File System Tasks are used for performing operations on files and directories on our local machine, or on network disk drives. 
+    All File System Tasks (including FTP Tasks and Hadoop File System Tasks) generally require the same information:
+        + Source information 
+        + Destination information
+        + Login details required for accessing the data 
+
+Operations that this task can complete:
+    + Copy Directory or File 
+    + Create/Delete/Move Directory
+    + Create/Delete/Move File 
+    + Rename File 
+    + Set Attributes 
+        - Hidden
+        - ReadOnly
+        - Archive
+        - System 
+
+    
+

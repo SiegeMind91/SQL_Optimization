@@ -1,0 +1,13 @@
+Containers
+
+Containers can be used to better organize complex tasks, but they can also help with adding functionality to a process. 
+    + For Loop containers can loop through a process until a certain condition is met 
+    + Foreach Loop containers ensure that each piece has the operation carried out upon it 
+    + Sequence containers simply group the tasks together into a single meaningful unit of work 
+
+Containers aren't only for organizing or looping our tasks though, they can even become part of the precedence/constraint pathway themselves. 
+We can move from one sequence container to another and giving the pathway it's own constraints on when to execute. 
+
+In the Design Surface we can choose to disable a task or container if we're trying to debug or understand what causes some action to happen. 
+We can also choose to execute the container individually without it running the next steps in the control flow 
+

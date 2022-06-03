@@ -1,0 +1,20 @@
+What is Integration Services?
+    + Often abbreviated as SSIS
+    + A platform for building automated workflows
+    + Integrates data from a variety of sources 
+    + ETL: extract, transform, load
+    + Perform additional maintenance and administration tasks
+
+SSIS Tools
+    + SQL Server Data Tools (SSDT)
+        - A component of Visual Studio
+        - Used to develop a package of tasks and define how they connect
+    + SQL Server Management Studio (SSMS)
+        - Used to manage the Integration Services database
+        - Schedule packages and monitor results
+
+Integration Services Service 
+    + Installed as a shared component of SQL Server 
+    + Runs in the background 
+    + Stores packages and connections to data sources 
+

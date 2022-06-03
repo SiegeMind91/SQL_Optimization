@@ -1,0 +1,16 @@
+Data Flow Task 
+
+Unlike other tasks, when we double click on this task in our design surface it will not open a new form window, but instead it will change our 
+    design surface to the Data Flow view. It will also change the options available to us in the toolbox
+Here we can see different sources for our data and common functions that we can apply to the data 
+
+Adding a Source Assistant will give us the options for bringing in data from a myriad of sources.
+Once our source is selected and configured, we can double click on the chosen source and select the table(s) we want to touch. 
+    We can select entire tables/views, or we can write our own SQL command for more complex queries 
+
+Adding a Destination Assistant will give us options for where we want that data to go. 
+Once our destination is selected and configured, we'll need to double click on it and select a table for where we want the data to go. 
+    We can also choose to create a new table for the data. 
+
+
+ 

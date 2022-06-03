@@ -1,0 +1,28 @@
+Integration Services Tasks 
+
++ Data Flow Task
+    - Extract data from a variety sources, apply column level transformations, and load data into a database 
+
++ Data Preparation Task
+    - Copy files and directories from local file systems, FTP sites, or the internet 
+
++ Workflow Task 
+    - Communicate with other processes to run packages or programs 
+    - Send emails, read Windows Management Instrumentation (WMI) data, and watch for WMI events
+
++ SQL Server Task 
+    - Access, copy, insert, delete, and modify SQL Server objects and data 
+
++ Scripting Task 
+    - Extend package functionality by using custom written scripts 
+
++ Analysis Services Task 
+    - Create, modify, delete, and process Analysis Services objects 
+
++ Maintenance Task
+    - Perform administrative functions such as backing up SQL Server Dbs 
+    - Rebuilding and reorganizing indexes and run SQL Server Agent jobs 
+
++ Custom Task 
+    - Written in a programming language, such as Visual Basic or C# 
+

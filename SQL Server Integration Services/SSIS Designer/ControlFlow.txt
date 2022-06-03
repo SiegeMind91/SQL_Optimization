@@ -1,0 +1,46 @@
+Defining Control Flow Tasks 
+
+In an Integration Services Project in Visual studio, click into the Package.dstx file which will open the Design Surface.
+    Here we can drag or double click on tasks from the SSIS toolbox into the Design Surface and create a visual flow for our package 
+
+Some important tasks to note:
+    + Data Flow Task 
+        - Moves data between sources, while transforming and cleaning the data. 
+    + Execute SQL Task 
+        - Executes SQL statements or stored procedures in a relational database 
+
+Once we've added a task to the Design Surface, we will be able to see the reference to it in the Control Flow. 
+If the task has a red 'X' on it, it's not ready to be executed. If we hover over the 'X' it will give us more details about what still needs to be done. 
+
+For an Execute SQL Task we'll need to update the connection properties to be able to use it. 
+    To do this, double click on the task and you'll see the task editor. 
+    Then go to the 'General' section on the left and update the ConnectionType and Connection properties (under SQL Statement)
+    Next, we'll need to give the SQL Task some SQL to run. We can do that by updating the SQLStatement property. 
+    Click the elipses next to the SQLStatement property and a window will appear where we can add our SQL code. 
+
+In order to control the sequence of tasks (rather than them running simultaneously, which is the default) we need to create a precedence constraint. 
+    To do this, simply select the task that you would like to run first, then drag the arrow that appears below it to the next task in the sequence. 
+    Something to be mindful of is the color of the line/arrow:
+        + Green means that the second task will only run if the first task runs successfully. 
+            - We can change this if we double click on the line and look at the "Value" drop down menu. 
+            - 'Success', our default option, means that the constraint (next) task will only run if the precedence (current task) completed successfully.  
+            - If we change it to 'Failure' then the next step will only execute if the previous step fails to run. 
+            - If we change it to 'Completion' then the next step will only run after the completion of the previous step, Succeed or Fail 
+        + Red means that we're set to 'Failure' mode 
+        + Grey/Blue means that we're set to 'Completion' mode 
+
+Within the Precedence Constraint Editor where we set our lines' Value property, there's another option we should pay attention to called 'Evaluation Operation'
+    + Contraint - this option will only look at the status of the precedence executable (the last task) and use the Value field to determine what to do next 
+    + Expression - this option allows us to code a more complex logic than just a Pass/Fail system 
+There are also options for tasks with multiple constraints to control the task behavior 
+    + Logical AND - requires that all constraints evaluate to True before proceeding 
+    + Logical OR - requires that at least one of the constraints evaluate to True 
+
+Executing a Package:
+    Normally we're only going to be designing and debugging the packages we create in Visual Studio, but eventually we'll want to export the package to the SSIS db 
+        so that it can be scheduled and executed by SQL Server. 
+    To ensure that it will run properly though, we can execute the package in VS by right clicking on the Package.dtsx file and click execute package, or you can 
+        click the start button at the top of VS. 
+    Once the package has run, you can check the details of the execution by clicking on the Progress option at the top of the .dtsx file in the Design Surface. 
+
+
