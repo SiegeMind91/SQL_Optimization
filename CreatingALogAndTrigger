@@ -1,0 +1,138 @@
+--This script will help you create a database logging table to catch any Create, alter, or drop transactions that occur. 
+
+--==========================================Start of Table Creation=============================================
+USE [DATABASE_NAME]  --Insert Database Name
+GO
+SET ANSI_NULLS ON --Forces queries against the table to use IS NULL or IS NOT NULL rather than = NULL or <> NULL
+GO
+SET QUOTED_IDENTIFIER ON --Causes SQL Server to follow the ISO rules regarding quotation mark delimiting identifiers and literal strings
+GO
+
+CREATE TABLE [dbo].[ChangeLog](
+    [LogId] [INT] IDENTITY(1,1) NOT NULL,
+    [DatabaseName] [VARCHAR](256) NOT NULL,
+    [EventType] [VARCHAR](50) NOT NULL,
+    [ObjectName] [VARCHAR](256) NOT NULL,
+    [ObjectType] [VARCHAR](25) NOT NULL,
+    [SqlCommand] [VARCHAR](MAX) NOT NULL,
+    [EventDate] [DATETIME] NOT NULL,
+    [LoginName] [VARCHAR](256) NOT NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY] -- A redundant statement that tells it where to store the files, but we'll leave it in
+GO
+
+--This constraint just ensures that the current date/time is the only value allowed to be added
+--  into the EventDate field. This helps to keep someone from tampering with the log records
+ALTER TABLE [dbo].[ChangeLog] ADD  CONSTRAINT [DF_EventsLog_EventDate]  
+            DEFAULT (GETDATE()) FOR [EventDate]
+GO
+
+--==================================End of Table Creation========================================================
+
+--==================================Start of Create/Alter/Drop Trigger Creation==================================
+--This is a DDL Trigger, it fires when create/alter/drop statements are executed and can be helpful for db security and protection
+--This one can be fired at the database or server level, so we'll always see the logs if anything happens on this db
+USE [DATABASE_NAME]  --Insert Database Name
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ 
+CREATE TRIGGER [backup_objects]
+ON DATABASE
+FOR CREATE_PROCEDURE, 
+    ALTER_PROCEDURE, 
+    DROP_PROCEDURE,
+    CREATE_TABLE, 
+    ALTER_TABLE, 
+    DROP_TABLE,
+    CREATE_FUNCTION, 
+    ALTER_FUNCTION, 
+    DROP_FUNCTION,
+    CREATE_VIEW,
+    ALTER_VIEW,
+    DROP_VIEW
+AS
+ 
+SET NOCOUNT ON --Forces it to not return a row count of records affected
+ 
+DECLARE @data XML
+SET @data = EVENTDATA()
+ 
+INSERT INTO changelog(databasename, eventtype, 
+    objectname, objecttype, sqlcommand, loginname)
+VALUES(
+@data.value('(/EVENT_INSTANCE/DatabaseName)[1]', 'varchar(256)'),
+@data.value('(/EVENT_INSTANCE/EventType)[1]', 'varchar(50)'), 
+@data.value('(/EVENT_INSTANCE/ObjectName)[1]', 'varchar(256)'), 
+@data.value('(/EVENT_INSTANCE/ObjectType)[1]', 'varchar(25)'), 
+@data.value('(/EVENT_INSTANCE/TSQLCommand)[1]', 'varchar(max)'), 
+@data.value('(/EVENT_INSTANCE/LoginName)[1]', 'varchar(256)')
+)
+GO
+ 
+ENABLE TRIGGER [backup_objects] ON DATABASE --Enables the trigger to start running after this script is run
+GO
+
+--===================================End of Create/Alter/Drop Trigger Creation===================================
+
+--====================================Start of Insert/Delete Trigger Creation====================================
+--This is called a DML Trigger, it handles insert/update/delete statements
+--This one will only be applicable on at a table level, so we'll have to choose which tables we want to add it to
+CREATE TRIGGER production.trg_product_audit
+ON production.products
+AFTER INSERT, UPDATE, DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO production.product_audits(
+        product_id, 
+        product_name,
+        brand_id,
+        category_id,
+        model_year,
+        list_price, 
+        updated_at, 
+        operation
+    )
+    SELECT
+        i.product_id,
+        product_name,
+        brand_id,
+        category_id,
+        model_year,
+        i.list_price,
+        GETDATE(),
+        'INS'
+    FROM
+        inserted i
+    UNION ALL
+    SELECT
+        d.product_id,
+        product_name,
+        brand_id,
+        category_id,
+        model_year,
+        d.list_price,
+        GETDATE(),
+        'DEL'
+    FROM
+        deleted d
+    UNION ALL
+    SELECT
+        u.product_id,
+        product_name,
+        brand_id,
+        category_id,
+        model_year,
+        u.list_price,
+        GETDATE(),
+        'DEL'
+    FROM
+        updated u;
+END
+
+--=====================================End of Insert/Delete Trigger Creation=====================================
+
+
+
