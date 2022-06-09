@@ -1,0 +1,62 @@
+-- This simple loop will print the counter value while it's between 1 and 10
+
+DECLARE @Counter INT 
+SET @Counter=1
+WHILE ( @Counter <= 10)
+BEGIN
+    PRINT 'The counter = ' + CONVERT(VARCHAR,@Counter)
+    SET @Counter  = @Counter  + 1
+END
+
+-- This loop is set up to run up to 10, but we can set a condition at the value of 7 to exit the loop
+-- A break statement will run when the condition is met and exit the loop
+-- Break statements are also helpful as a failsafe to ensure your loop doesn't run infinitely
+
+DECLARE @Counter INT 
+SET @Counter=1
+WHILE ( @Counter <= 10)
+BEGIN
+  PRINT 'The counter value is = ' + CONVERT(VARCHAR,@Counter)
+  IF @Counter >=7
+  BEGIN
+  BREAK
+  END
+    SET @Counter  = @Counter  + 1
+END
+
+-- Similar to Break, we can use Continue to exit the current iteration of the loop, but not exit the loop entirely
+
+DECLARE @Counter INT 
+SET @Counter=1
+WHILE ( @Counter <= 20)
+BEGIN
+ 
+  IF @Counter % 2 =1
+  BEGIN
+  SET @Counter  = @Counter  + 1
+  CONTINUE
+  END
+    PRINT 'The counter value is = ' + CONVERT(VARCHAR,@Counter)
+    SET @Counter  = @Counter  + 1
+END
+
+-- Our last example shows how you can dynamically get the number of rows to be looped through
+-- Currently it only prints out the value, but you could have it sum a total where certain requirements are met or many other uses
+
+USE tempdb
+GO
+ 
+DECLARE @Counter INT , @MaxId INT, 
+        @CountryName NVARCHAR(100)
+SELECT @Counter = min(Id) , @MaxId = max(Id) 
+FROM SampleTable
+ 
+WHILE(@Counter IS NOT NULL
+      AND @Counter <= @MaxId)
+BEGIN
+   SELECT @CountryName = CountryName
+   FROM SampleTable WHERE Id = @Counter
+    
+   PRINT CONVERT(VARCHAR,@Counter) + '. country name is ' + @CountryName  
+   SET @Counter  = @Counter  + 1        
+END
