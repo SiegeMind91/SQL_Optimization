@@ -1,0 +1,36 @@
+--In SQL, there are times when we may want to clean up a string before sending it into the database or to our code
+--In these instances, we could be tempted to use something like this;
+
+CREATE PROCEDURE dbo.My_Stored_Procedure
+	@String_Parameter VARCHAR(289)
+AS
+BEGIN
+	SELECT @String_Parameter = REPLACE(REPLACE(REPLACE(@String_Parameter, '@', ''), '#', ''), '%', '');
+	SELECT @String_Parameter;
+END
+
+--But the problem is that it only replaces the characters we've called out, and it's already becoming messy. Imagine adding 
+--  10 or more characters to this list. 
+
+--Instead what we can do is use a regular expression and a few helpful functions to make this easier and more complete 
+--The below function uses RegEx to scan through our string and replace any unwanted characters, which in this case 
+--  is anything that is not an upper or lower case letter, or is not a number. 
+
+CREATE FUNCTION dbo.Remove_Non_Alphanumeric
+	(@String_Parameter VARCHAR(289)) 
+RETURNS VARCHAR(289)
+AS
+BEGIN
+	DECLARE @Alphanumeric_Characters VARCHAR(289) = '%[^A-Z^a-z^0-9]%';
+ 
+	WHILE PATINDEX(@Alphanumeric_Characters, @String_Parameter) > 0
+	BEGIN
+		SELECT @String_Parameter = STUFF(@String_Parameter, PATINDEX(@Alphanumeric_Characters, @String_Parameter), 1, '');
+	END
+ 
+	RETURN @String_Parameter;
+END
+
+SELECT dbo.Remove_Non_Alphanumeric('Te$s!t S&t$*ri@ng!@#$%^&'); -- This would output 'TestString'
+
+-- If we modified the RegEx to instead be '%^[a-zA-Z0-9 ()-]%' then it would do mostly the same job, except now it also allows spaces, parenthesis and dashes. 
