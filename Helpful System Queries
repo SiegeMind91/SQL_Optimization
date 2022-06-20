@@ -1,0 +1,96 @@
+/*This is a list of a bunch of SQL queries or functions that are built into SQL Server and can save a ton of time*/
+
+--Gets the current version you are running
+SELECT @@VERSION AS Version_Name  
+
+--Gets the current language
+SELECT @@LANGUAGE AS Current_Language; 
+
+--Get the current server name
+SELECT @@SERVERNAME AS 'Server_Name'  ;
+
+--Swaps the values of two columns
+UPDATE Table_Name SET Column1=Column2, Column2=Column1  ;
+
+--Gets the first date of the current month
+SELECT CONVERT(VARCHAR(25),DATEADD(DAY,-(DAY(GETDATE()))+1,GETDATE()),105) First_Date_Current_Month;
+
+--Gets the last date of the previous month
+SELECT CONVERT(VARCHAR(25),DATEADD(DAY,-(DAY(GETDATE())),GETDATE()),105) Last_Date_Previous_Month;  
+
+--Gets the last date of the current month
+SELECT CONVERT(VARCHAR(25),DATEADD(DAY,-(DAY(GETDATE())), DATEADD(MONTH,1,GETDATE())),105) Last_Date_Current_Month; 
+
+--Gets the first date of next month
+SELECT CONVERT(VARCHAR(25),DATEADD(DAY,-(DAY(GETDATE())), DATEADD(MONTH,1,GETDATE())+1),105) First_Date_Next_Month; 
+
+--Gets the free space on each of your hard disk locations
+EXEC master..xp_fixeddrives ;
+
+--This query returns a list of all databases on the current server
+EXEC sp_helpdb 
+
+--This query retrieves the creation text for a view or procedure
+exec sp_helptext @objname = 'Table_or_Function_or_view_Name'  
+
+--This query retrieves a list of all procedures - to use it for functions, swap 'P' for 'FN' - to use it for views, swap 'P' for 'V'
+SELECT DISTINCT o.name, o.xtype  
+FROM syscomments c  
+  INNER JOIN sysobjects o ON c.id=o.id  
+WHERE o.xtype='P'
+
+--This is a simple modification of the query above. This lets us choose which table the procedures touch
+SELECT DISTINCT o.name, o.xtype  
+FROM syscomments c  
+  INNER JOIN sysobjects o ON c.id=o.id  
+WHERE c.TEXT LIKE '%Table_Name%' AND o.xtype='P' 
+
+--This query will rebuild all indexes
+EXEC sp_MSforeachtable @command1="print '?' DBCC DBREINDEX ('?', ' ', 80)"  
+GO  
+EXEC sp_updatestats  
+GO
+
+--This query finds the byte size of all tables in a database
+SELECT sob.name AS Table_Name,  
+  SUM(sys.length) AS [Size_Table(Bytes)]  
+FROM sysobjects sob, syscolumns sys  
+WHERE sob.xtype='u' AND sys.id=sob.id  
+GROUP BY sob.name
+
+--This query lists out the primary and foreign keys for the entire database, or we can choose to look at a particular table
+SELECT DISTINCT  
+  Constraint_Name AS [Constraint],  
+  Table_Schema AS [Schema],  
+  Table_Name AS [TableName] 
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE  
+--WHERE INFORMATION_SCHEMA.KEY_COLUMN_USAGE.TABLE_NAME='Table_Name'
+GO
+
+--This query lets us see how many rows each table has
+CREATE TABLE #Tab  
+  (  
+  Table_Name [varchar](max),  
+  Total_Records int  
+  );  
+EXEC sp_MSForEachTable @command1=' Insert Into #Tab(Table_Name, Total_Records) SELECT ''?'', COUNT(*) FROM ?'  
+SELECT * FROM #Tab t ORDER BY t.Total_Records DESC;  
+DROP TABLE #Tab;  
+
+--This command disables all triggers for a given database - you can change 'disable' to 'enable' and activate all triggers instead
+USE Database_Name  
+EXEC sp_msforeachtable "ALTER TABLE ? DISABLE TRIGGER all"  
+
+-- Shows which procedures (could be views 'v', or functions 'fn') have been modified within the last N days
+-- we can also change 'modify_date' to 'sys.objects.create_date' if we wanted to see how many days since creation
+SELECT name,modify_date  
+FROM sys.objects  
+WHERE type='P'  
+  AND DATEDIFF(D,modify_date,GETDATE()) < N  --Swap N here for any number of days
+
+--Get all columns of a chosen type, here we chose date
+SELECT OBJECT_NAME(c.OBJECT_ID) as Table_Name, c.name as Column_Name  
+FROM sys.columns AS c  
+  JOIN sys.types AS t ON c.user_type_id=t.user_type_id  
+WHERE t.name = 'date' 
+
