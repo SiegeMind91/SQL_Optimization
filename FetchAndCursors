@@ -1,0 +1,78 @@
+--Using a cursor to navigate by row through a dataset is an incredible tool
+--When we're using a cursor, we're also going to use the FETCH keyword to help us choose how to move through the dataset 
+--Below are some slightly modified examples from the Microsoft docs on FETCH
+
+--===========================================================================================
+--Setting up the DB we'd like to use
+USE YourGivenDB;  
+GO  
+
+--Declaring our cursor and defining the query we're wanting to look at
+--Here we're wanting to look at all the last names that start with a 'B'
+DECLARE contact_cursor CURSOR FOR  
+SELECT LastName FROM Person.Person  
+WHERE LastName LIKE 'B%'  
+ORDER BY LastName;  
+
+--Opening the cursor, similar to how we open a connection to dbs from other languages
+OPEN contact_cursor;  
+  
+-- Perform the first fetch. If it's the first fetch it will always return the first row
+FETCH NEXT FROM contact_cursor;  
+  
+-- Check @@FETCH_STATUS to see if there are any more rows to fetch.  
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+   -- This is executed as long as the previous fetch succeeds.  
+   FETCH NEXT FROM contact_cursor;  
+END  
+  
+--Closing out our cursor, again similar to connections 
+CLOSE contact_cursor;  
+
+--Freeing up the memory we were using
+DEALLOCATE contact_cursor;  
+GO  
+--===========================================================================================
+
+
+
+--We could also choose to do something with the data that we're fetching
+--Here's a simple example printing the values to the console
+--===========================================================================================
+USE YourGivenDB;  
+GO  
+
+-- Declare the variables to store the values returned by FETCH.  
+DECLARE @LastName VARCHAR(50), @FirstName VARCHAR(50);  
+  
+DECLARE contact_cursor CURSOR FOR  
+SELECT LastName, FirstName FROM Person.Person  
+WHERE LastName LIKE 'B%'  
+ORDER BY LastName, FirstName;  
+  
+OPEN contact_cursor;  
+  
+-- Perform the first fetch and store the values in variables.  
+-- Note: The variables are in the same order as the columns  
+-- in the SELECT statement.   
+  
+FETCH NEXT FROM contact_cursor  
+INTO @LastName, @FirstName;  
+  
+-- Check @@FETCH_STATUS to see if there are any more rows to fetch.  
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+  
+   -- Concatenate and display the current values in the variables.  
+   PRINT 'Contact Name: ' + @FirstName + ' ' +  @LastName  
+  
+   -- This is executed as long as the previous fetch succeeds.  
+   FETCH NEXT FROM contact_cursor  
+   INTO @LastName, @FirstName;  
+END  
+  
+CLOSE contact_cursor;  
+DEALLOCATE contact_cursor;  
+GO  
+--===========================================================================================
