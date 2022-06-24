@@ -1,0 +1,23 @@
+--The below code uses CTEs to accomplish a detailed field of the time 
+--difference between the first and last time punch of the day
+
+--You can have as many waterfalls as you need to build up to the final table which you can then return
+--CTEs can accomplish a lot, but remember that if you have a large data set, using temp tables is much faster
+
+WITH 
+TimeKeeper_SecondsByDay AS 
+  (SELECT SubmitDate, DateDiff(second, StartofDay, EndOfDay) as GrossWorkingTime 
+    FROM TK),
+TimeKeeper_Differences AS 
+  (SELECT SubmitDate, GrossWorkingTime, 
+      GrossWorkingTime % 60 as seconds_part,
+      GrossWorkingTime % 3600 as minutes_part,
+      GrossWorkingTime % (3600 * 24) as hours_part
+    FROM TimeKeeper_SecondsByDay)
+SELECT SubmitDate,
+  CONCAT(FLOOR(GrossWorkingTime / 3600 / 24), ' days ', 
+         FLOOR(hours_part / 3600), ' hours ',
+         FLOOR(minutes_part / 60), ' minutes ', 
+         seconds_part, ' seconds'
+         ) as GrossWorkingTime
+FROM TimeKeeper_Differences
