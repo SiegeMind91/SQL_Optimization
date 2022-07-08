@@ -1,0 +1,16 @@
+--Recursive CTEs are really useful in hierarcical data or any data set that can join on itself using a unique ID
+
+WITH hierarchy AS (
+   --This is called our anchor query, it returns the base that we'll build on
+   SELECT id
+          , manager_id
+   FROM staff_members
+   WHERE manager_id IS NULL --This is the termination condition, without this it will loop forever
+   
+   UNION ALL --The UNION ALL is what forces the query to be recursive, as long as the below returns a result, it will keep querying
+   
+   --The query that is executed recursively to give us a result
+   SELECT sm.id
+          , sm.manager_id
+   FROM staff_members sm
+    INNER JOIN org_structure os ON os.id = sm.manager_id
