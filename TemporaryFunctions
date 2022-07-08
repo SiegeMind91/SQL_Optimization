@@ -1,0 +1,25 @@
+--Temporary functions help us clean up our code and express logic in one place rather than in several
+
+--If we use something like the below, yeah it works, but it can be hard to read especially if there's bad space formatting 
+SELECT name
+       , CASE WHEN tenure < 1 THEN "analyst"
+              WHEN tenure BETWEEN 1 and 3 THEN "associate"
+              WHEN tenure BETWEEN 3 and 5 THEN "senior"
+              WHEN tenure > 5 THEN "vp"
+              ELSE "n/a"
+         END AS seniority 
+FROM employees
+
+--Or, we can leverage temporary functions and do something like this. Suddenly our select statement is much more readable and if we need to 
+--    utilize the functionality of this case statement later, it's here for us. 
+CREATE TEMPORARY FUNCTION get_seniority(tenure INT64) AS (
+   CASE WHEN tenure < 1 THEN "analyst"
+        WHEN tenure BETWEEN 1 and 3 THEN "associate"
+        WHEN tenure BETWEEN 3 and 5 THEN "senior"
+        WHEN tenure > 5 THEN "vp"
+        ELSE "n/a"
+   END
+);
+SELECT name
+       , get_seniority(tenure) as seniority
+FROM employees
