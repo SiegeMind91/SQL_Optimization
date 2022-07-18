@@ -1,10 +1,12 @@
 //Show Columns is the command you never knew you needed. It returns a table with the table and schema name as well as the column names and types. 
 //The only downside to Show Columns is that it doesn't exist in SQL Server, but instead in Snowflake
 
+//===========SNOWFLAKE
 //Show Columns Example
 SHOW COLUMNS IN TABLE myDatabase.mySchema.myTable
 
 
+//===========SQL SERVER
 //SQL Server has its own version of show columns, it's just not as simple
 SELECT *
 FROM INFORMATION_SCHEMA.COLUMNS
@@ -16,3 +18,12 @@ FROM sys.columns c
   JOIN sys.objects o ON o.object_id = c.object_id 
 WHERE o.type = 'U' --The type here is for tables only, but if you added WHERE o.type IN ('U', 'V') you could get all of the views as well
 ORDER BY o.Name, c.Name
+
+
+//===========ORACLE
+//This is how you can do something similar in Oracle, and there are several options to replace column_name or table_name with
+SELECT table_name, column_name 
+FROM all_tab_columns 
+WHERE column_name LIKE '%PTS%'
+  OR column_name = 'ThisString'
+;
