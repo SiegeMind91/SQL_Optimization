@@ -1,0 +1,27 @@
+--In SQL Server, you're probably already familiar with MIN() and MAX(), but there is another 
+-- set of functions to help compare values, GREATEST() and LEAST().
+
+--These functions help you get the smallest or largest value from a list of values, rather than from a column
+
+--Simple Example
+--This will return 1 because it is the smallest (or least) value
+SELECT LEAST(1,2,3,4,5)
+--This will return 5 because it is the largest (or greatest) value
+SELECT GREATEST(1,2,3,4,5)
+
+--More in depth example===============================================
+--This could really be accomplished by using min on a union query, 
+--  but this illustrates the concept we want to see 
+
+Declare @minBill2019 int
+Set @minBill2019 = (SELECT MIN(monthlyBillAmount) FROM GasBills2019)
+Declare @minBill2020 int
+Set @minBill2019 = (SELECT MIN(monthlyBillAmount) FROM GasBills2020)
+Declare @minBill2021 int
+Set @minBill2019 = (SELECT MIN(monthlyBillAmount) FROM GasBills2021)
+Declare @minBill2022 int
+Set @minBill2019 = (SELECT MIN(monthlyBillAmount) FROM GasBills2022)
+
+--Gives us the lowest monthly bill of the 4 years
+SELECT LEAST(@minBill2019, @minBill2020, @minBill2021, @minBill2022)
+=======================================================================
