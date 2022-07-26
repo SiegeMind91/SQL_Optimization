@@ -20,6 +20,8 @@ CREATE TEMPORARY FUNCTION get_seniority(tenure INT64) AS (
         ELSE "n/a"
    END
 );
+
+--Then we can call this function inline with our final query
 SELECT name
        , get_seniority(tenure) as seniority
 FROM employees
