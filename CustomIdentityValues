@@ -1,0 +1,9 @@
+--This took me a lot longer to learn than I would like to admit
+--The below command allows us to use an insert into statement with custom values for an Identity column
+
+SET IDENTITY_INSERT BA_AppHub_DEV.dbo.ThemeTickets_Submissions ON
+
+--There are only a couple of things to note about this
+-- 1) You should always turn this back off to ensure your identities are created correctly
+-- 2) Only one table can have this functionality turned on at a time
+--  2a) If you try to turn it on in another table, it will tell you which table is currently using the functionality
