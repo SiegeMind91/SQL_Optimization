@@ -1,0 +1,19 @@
+--A simple but powerful keyword, Intersect allows us to compare two datasets and only return the records existing in both
+
+--Example:
+
+SELECT
+    city
+FROM
+    sales.customers t1
+    
+INTERSECT
+
+SELECT
+    city
+FROM
+    sales.stores t2
+ORDER BY
+    city;
+    
+--This would only return cities where customers and stores both exist
