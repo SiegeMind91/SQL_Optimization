@@ -15,3 +15,13 @@ Each package has a number of things that it may contain including;
     - Before you can add data to a package, it must have a data flow
   + Connection Managers - This is where your connections are stored
     - Each package usually has at least one to manage the properties of your package
+
+Data Flow Tasks
+  + Data Flow tasks are probably the most common task you use when building a package. 
+  + It makes the overall layout simpler by acting as a container for a set of instructions that Extract/Transform/Load your data. 
+  + You can have one or multiple Data Flow tasks in a given package, depending on your end goal needs. 
+  
+Variables
+  + Variables act as they would in any other language, as either static or dynamic values to be used within your package. 
+  + You can assign expressions to be evaluated using other variables, or you can write simple ternary operations for "one or the other" situations
+    - Expressions use the SSIS Syntax, that is similar to C++ or C#, but is very picky and requires some experience before it can be used easily. 
