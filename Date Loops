@@ -1,0 +1,20 @@
+--This code allows you to set a certain start and end date, then loop through until all dates have been used
+--For this example, we're inserting data into a table, but because we want a snapshot of each day, we don't want to use the whole date range at once
+
+DECLARE @StartDate DATE = ‘2016-10-01’;
+DECLARE @EndDate DATE = ‘2016-10-31’;
+
+WHILE (@StartDate <= @EndDate)
+
+BEGIN
+
+--print @StartDate;
+
+INSERT INTO [SomeTable]
+SELECT * from [SomeOtherTable] 
+WHERE [DateField] >= DATEADD(dd, 0, DATEDIFF(dd, 0, @StartDate)) 
+	AND [DateField] <= DATEADD(day, DATEDIFF(day, 0, @StartDate), '23:59:59')
+
+set @StartDate = DATEADD(day, 1, @StartDate);
+
+END;
